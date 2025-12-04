@@ -1,5 +1,6 @@
 # Core Agent Framework
-crewai==0.80.0
+#crewai==0.80.0 # version 0.80.0 not exist
+crewai>=1.6.1
 langchain_openai
 
 # Tools & APIs
