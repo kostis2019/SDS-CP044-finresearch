@@ -27,6 +27,10 @@ def get_stock_price(ticker: str) -> str:
             return f"No data available for ticker '{ticker}'. Please verify the ticker symbol is correct."
         
         price = history['Close'].iloc[-1]
+        print(f"---------stock price of {ticker}" + "\n")        
+        print(price)
+        print(f"---------stock price of {ticker}" + "\n")
+    
         
         # CONTEXT ENRICHMENT: Return additional useful information
         company_name = stock.info.get('shortName', ticker)
@@ -56,6 +60,9 @@ def get_stock_info(ticker: str) -> str:
         ticker = ticker.strip().upper()
         stock = yf.Ticker(ticker)
         info = stock.info
+        print(f"---------stock info of {ticker}" + "\n")        
+        print(info)
+        print(f"---------stock info of {ticker}" + "\n")
         
         # BUILD A STRUCTURED RESPONSE
         # We return key metrics that would be useful for a financial analyst

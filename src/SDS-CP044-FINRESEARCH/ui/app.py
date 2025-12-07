@@ -11,7 +11,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from agents.financial_crew import build_financial_crew
+from agents import build_financial_crew
 from ui.components.input import render_input_form
 from ui.components.output import render_output_tabs
 from ui.components.export import render_export_buttons
@@ -48,12 +48,37 @@ def main():
         # Run Analysis Button
         if st.button("🚀 Run Analysis", type="primary", use_container_width=True):
             run_analysis(user_inputs)
+
+    print("st.session_state.analysis_complete" + "\n")
+    print(st.session_state.analysis_complete)
+    print("st.session_state.analysis_completen" + "\n")
+
+    print("st.session_state.analysis_results" + "\n")
+    print(st.session_state.analysis_results)
+    print("st.session_state.analysis_results" + "\n")
     
+    analysis_complete = st.session_state.get("analysis_complete", False)
+    print("analysis_complete" + "\n")
+    print(analysis_complete)
+    print("analysis_complete" + "\n")
+
     # Main content area
     if st.session_state.get("analysis_complete", False):
+        print("!!!!!!!!!!!!!!!!!!!!!!\n")
+
+        print("analysis_complete if analysis_complete" + "\n")
+        print(analysis_complete)
+        print("analysis_complete" + "\n")
+
+        print("st.session_state.get('analysis_results')" + "\n")
+        analysis_results_from_get = st.session_state.get("analysis_results")
+        print(analysis_results_from_get)
+        print("st.session_state.get('analysis_results')" + "\n")
+        
         # Display results in tabs
         render_output_tabs(st.session_state.get("analysis_results"))
-        
+        print("!!!!!!!!!!!!!!!!!!!!!!\n")
+                
         # Export options
         st.divider()
         render_export_buttons(st.session_state.get("analysis_results"))
@@ -100,13 +125,21 @@ def run_analysis(user_inputs: dict):
             
             # Execute the crew
             result = crew.kickoff()
+            print("*" * 70)
+            print(result)
+            print("*" * 70 + "\n")
             
             # Update progress
             status_text.text("Formatting results...")
             progress_bar.progress(80)
             
-            # Parse and structure the output
+            # Parse and structure the output           
             structured_results = parse_crew_output(result, user_inputs)
+
+            print("structured_results" * 3)
+            print("*" * 70 + "\n")
+            print(structured_results)
+            print("*" * 70 + "\n")
             
             # Update progress
             progress_bar.progress(100)

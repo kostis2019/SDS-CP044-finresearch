@@ -66,17 +66,15 @@ def build_financial_analyst_task(inputs: dict = None) -> Task:
     ticker = inputs.get("ticker") 
     investor_mode = inputs.get("investor_mode")
     
-    task = Task(
+    task = Task(      
        description=(
         f"Conduct a comprehensive financial analysis of {ticker}.\n\n"
             f"Investment Perspective: {investor_mode}\n\n"
             "Your analysis must include:\n"
-            "1. Current stock price and recent price movement\n"
-            "2. Key valuation metrics (P/E, PEG, P/B ratios)\n"
-            "3. Profitability metrics (ROE, ROA, profit margins)\n"
-            "4. Growth metrics (revenue growth, EPS growth)\n"
-            "5. Risk metrics (beta, volatility, debt ratios)\n"
-            "6. Financial health assessment\n\n"
+            "- Fetch stock price and stock info\n"
+            "- Key valuation metrics (P/E, PEG, Debt/Equity)\n"
+            "- Growth metrics (revenue growth, EPS growth)\n"
+            "- Risk flags (LLM-estimated)\n\n"            
             f"Frame your analysis from a {investor_mode.lower()} perspective, "
             "but remain objective and data-driven.\n\n"
             "Use the available tools to fetch real-time stock data and calculate metrics."

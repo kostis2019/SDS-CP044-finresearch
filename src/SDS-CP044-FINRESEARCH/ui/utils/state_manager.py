@@ -25,9 +25,16 @@ def update_analysis_state(results: dict):
     Args:
         results: Dictionary containing analysis results
     """
-    
+    print("?" * 70 + "\n")
+    print(results)
+    print("?" * 70 + "\n")
+
     st.session_state.analysis_complete = True
     st.session_state.analysis_results = results
+
+    print("results" * 7 + "\n")
+    print(results)
+    print("results" * 7 + "\n")
     
     # Add to history
     st.session_state.analysis_history.append({

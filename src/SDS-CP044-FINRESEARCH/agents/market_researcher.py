@@ -30,7 +30,9 @@ def get_market_data(ticker: str) -> str:
         market_query = f"Bring up some of the latest market data for stock {ticker}"
 
         search_response = tavily_client.search(market_query)
+        print("Tavily search result:::::::" + "\n")
         print(search_response)
+        print("Tavily search result:::::::" + "\n")
         
         market_data = ""
         for result in search_response["results"]:
@@ -94,18 +96,15 @@ def build_market_researcher_task(inputs: dict = None) -> Task:
     ticker = inputs.get("ticker") 
     investor_mode = inputs.get("investor_mode")
 
-    task = Task(
-       description=(
+    task = Task(      
+    description=(
        f"Research the market landscape and sentiment for {ticker}.\n\n"
         f"Investment Perspective: {investor_mode}\n\n"
         "Your research must cover:\n"
-        "1. Recent news and press releases (last 30 days)\n"
-        "2. Analyst ratings and price targets\n"
-        "3. Market sentiment analysis\n"
-        "4. Industry trends affecting the company\n"
-        "5. Competitive positioning\n"
-        "6. Key risks and opportunities\n"
-        "7. Major upcoming events (earnings, product launches, etc.)\n\n"
+        "- Fetch recent market news\n"
+        "- Search the web for sentiment, risks, upcoming events\n"
+        "- Extract article text snippets\n"
+        "- Write brief summaries\n\n"        
         f"Consider the {investor_mode.lower()} perspective when "
         "highlighting key findings.\n\n"
         "Use the available search tools to find current market information."

@@ -17,7 +17,10 @@ def render_output_tabs(results: dict):
     if not results:
         st.warning("No results to display")
         return
-    
+
+    print("_____________________________________________" + "\n")
+    print(results)
+    print("_____________________________________________" + "\n")
     # Create tabs
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "📋 Executive Summary",
@@ -26,9 +29,16 @@ def render_output_tabs(results: dict):
         "⚠️ Risks & Opportunities",
         "📄 Full Report"
     ])
+
+    print("executive_summary" + "\n")
+    print(results.get('executive_summary'))
+    print("executive_summary" + "\n")
     
     # Tab 1: Executive Summary
     with tab1:
+        print("executive_summary 2 " + "\n")
+        print(results.get('executive_summary'))
+        print("executive_summary 2" + "\n")
         render_executive_summary(results.get("executive_summary", {}))
     
     # Tab 2: Financial Indicators
@@ -54,6 +64,15 @@ def render_executive_summary(summary: dict):
     st.header("Executive Summary")
     
     col1, col2, col3 = st.columns(3)
+
+    print("summary" + "\n")
+    print(summary)
+    print("summary" + "\n")
+
+    print("summary current_price" + "\n")
+    summary_price = summary.get("current_price", "N/A")
+    print(summary_price)
+    print("summary current_price" + "\n")
     
     with col1:
         st.metric(
