@@ -27,7 +27,7 @@ def render_export_buttons(results: dict):
             data=markdown_content,
             file_name=f"financial_report_{results.get('ticker', 'report')}_{datetime.now().strftime('%Y%m%d')}.md",
             mime="text/markdown",
-            use_container_width=True
+            width='stretch' #use_container_width=True
         )
     
     # Export as JSON
@@ -38,14 +38,14 @@ def render_export_buttons(results: dict):
             data=json_content,
             file_name=f"financial_report_{results.get('ticker', 'report')}_{datetime.now().strftime('%Y%m%d')}.json",
             mime="application/json",
-            use_container_width=True
+            width=True
         )
     
     # Export as PDF (optional - requires additional library)
     with col3:
         st.button(
             "📑 Download PDF Report",
-            use_container_width=True,
+            width='strech', #use_container_width=True,
             disabled=True,
             help="PDF export coming soon"
         )

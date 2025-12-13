@@ -9,7 +9,7 @@ from agents.base import load_prompt
 from agents.manager import build_manager
 from agents.financial_analyst import build_financial_analyst, build_financial_analyst_task
 from agents.market_researcher import build_market_researcher, build_market_researcher_task
-
+from agents.reporter import build_reporter, build_reporter_task
 
 def build_financial_crew(inputs: dict = None) -> Crew:
     """
@@ -33,23 +33,27 @@ def build_financial_crew(inputs: dict = None) -> Crew:
     # Build agents
     financial_analyst = build_financial_analyst()
     market_researcher = build_market_researcher()
+    reporter = build_reporter()
        
     # Build tasks
     financial_analyst_task = build_financial_analyst_task(inputs)
     market_researcher_task = build_market_researcher_task(inputs)
+    reporter_task = build_reporter_task(inputs, [financial_analyst_task, market_researcher_task])
     
     crew = Crew(  
-        agents=[financial_analyst, market_researcher],
-        tasks=[financial_analyst_task, market_researcher_task],
+        agents=[financial_analyst, market_researcher, reporter],
+        tasks=[financial_analyst_task, market_researcher_task, reporter_task],
 
         # The process hierarchical is used for the crew since the introduced manager agent is used 
         # to coorrinate tasks delegated to the financial analyst agent and market research agent. 
         # Both the agents work in parallel for their own assigned tasks.
         # Technically, as specified in CewAI framework, when a manager agent is used for a crew,
-        # the process must be set as hierarchical. 
+        # the process must be set as hierarchical.
+        # The reporter starts producting report only when financial analyst agent and market research agent 
+        # finalyze their results and save them to vector DB (see build_reporter_task)
         process=Process.hierarchical,
 
-        manager_agent=build_manager(),
+        manager_agent=build_manager(inputs),
         verbose=True           
     )
 

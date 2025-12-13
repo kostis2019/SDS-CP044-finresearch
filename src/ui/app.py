@@ -46,39 +46,38 @@ def main():
         user_inputs = render_input_form()
         
         # Run Analysis Button
-        if st.button("🚀 Run Analysis", type="primary", use_container_width=True):
+        if st.button("🚀 Run Analysis", type="primary", width=True):
             run_analysis(user_inputs)
 
-    print("st.session_state.analysis_complete" + "\n")
-    print(st.session_state.analysis_complete)
-    print("st.session_state.analysis_completen" + "\n")
+    #print("st.session_state.analysis_complete" + "\n")
+    #print(st.session_state.analysis_complete)
+    #print("st.session_state.analysis_completen" + "\n")
 
-    print("st.session_state.analysis_results" + "\n")
-    print(st.session_state.analysis_results)
-    print("st.session_state.analysis_results" + "\n")
+    #print("st.session_state.analysis_results" + "\n")
+    #print(st.session_state.analysis_results)
+    #print("st.session_state.analysis_results" + "\n")
     
     analysis_complete = st.session_state.get("analysis_complete", False)
-    print("analysis_complete" + "\n")
-    print(analysis_complete)
-    print("analysis_complete" + "\n")
+    #print("analysis_complete" + "\n")
+    #print(analysis_complete)
+    #print("analysis_complete" + "\n")
 
     # Main content area
     if st.session_state.get("analysis_complete", False):
-        print("!!!!!!!!!!!!!!!!!!!!!!\n")
+        #print("!!!!!!!!!!!!!!!!!!!!!!\n")
 
-        print("analysis_complete if analysis_complete" + "\n")
-        print(analysis_complete)
-        print("analysis_complete" + "\n")
+        #print("analysis_complete if analysis_complete" + "\n")
+        #print(analysis_complete)
+        #print("analysis_complete" + "\n")
 
-        print("st.session_state.get('analysis_results')" + "\n")
+        #print("st.session_state.get('analysis_results')" + "\n")
         analysis_results_from_get = st.session_state.get("analysis_results")
-        print(analysis_results_from_get)
-        print("st.session_state.get('analysis_results')" + "\n")
+        #print(analysis_results_from_get)
+        #print("st.session_state.get('analysis_results')" + "\n")
         
         # Display results in tabs
         render_output_tabs(st.session_state.get("analysis_results"))
-        print("!!!!!!!!!!!!!!!!!!!!!!\n")
-                
+                        
         # Export options
         st.divider()
         render_export_buttons(st.session_state.get("analysis_results"))
@@ -102,8 +101,7 @@ def run_analysis(user_inputs: dict):
             
             # Update progress
             status_text.text("Initializing crew...")
-            progress_bar.progress(20)
-            
+            progress_bar.progress(20)            
                        
             # Update progress
             status_text.text("Manager delegating tasks...")
@@ -125,9 +123,9 @@ def run_analysis(user_inputs: dict):
             
             # Execute the crew
             result = crew.kickoff()
-            print("*" * 70)
+            print("crew_result" * 7)
             print(result)
-            print("*" * 70 + "\n")
+            print("crew_result" * 70 + "\n")
             
             # Update progress
             status_text.text("Formatting results...")
@@ -136,10 +134,9 @@ def run_analysis(user_inputs: dict):
             # Parse and structure the output           
             structured_results = parse_crew_output(result, user_inputs)
 
-            print("structured_results" * 3)
-            print("*" * 70 + "\n")
+            print("structured_results" * 3)           
             print(structured_results)
-            print("*" * 70 + "\n")
+            print("structured_results" * 70 + "\n")
             
             # Update progress
             progress_bar.progress(100)
@@ -173,7 +170,7 @@ def render_welcome_screen():
         
         1. **Manager Agent** - Orchestrates the research process and ensures quality
         2. **Researcher Agent** - Scrapes web, news, and analyst commentary
-        3. **Financial Analyst Agent** - Computes quantitative metrics and ratios
+        3. **Financial Analyst Agent** - Gathers quantitative metrics and ratios
         4. **Reporting Agent** - Synthesizes findings into professional reports
         
         ### 📋 How to Use:

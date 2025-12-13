@@ -1,9 +1,15 @@
 """Lead Market Researcher agent who gathers accurate, real-time stock data and identifies key market trends."""
 
+from pathlib import Path
+import sys
 from crewai import Agent, Task
 from langchain_openai import ChatOpenAI
 from .base import load_prompt
-from .tools.financial_tools import get_stock_info, get_stock_price
+
+project_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(project_root))
+from src.tools import get_stock_info, get_stock_price
+from src.tools.memory_tools import MemoryTools
 
 def build_financial_analyst() -> Agent:
     """
@@ -36,7 +42,7 @@ def build_financial_analyst() -> Agent:
         # TOOLS: This is the key differentiator! This agent can fetch real data.
         # The agent will automatically decide when to use these tools based on
         # the task description and the tool docstrings.        
-        tools=[get_stock_price, get_stock_info],
+        tools=[get_stock_price, get_stock_info, MemoryTools.save_finding],
                 
         # ALLOW DELEGATION: Set to False because we want this agent to do the
         # research itself, not delegate to the writer (who has no tools anyway).
@@ -58,7 +64,7 @@ def build_financial_analyst_task(inputs: dict = None) -> Task:
         Revenue/EPS growth
         Volatility & risk measures
     - Writes structured insights
-
+   
     Returns:
         Configured financial analyst task
     """
@@ -74,15 +80,17 @@ def build_financial_analyst_task(inputs: dict = None) -> Task:
             "- Fetch stock price and stock info\n"
             "- Key valuation metrics (P/E, PEG, Debt/Equity)\n"
             "- Growth metrics (revenue growth, EPS growth)\n"
-            "- Risk flags (LLM-estimated)\n\n"            
-            f"Frame your analysis from a {investor_mode.lower()} perspective, "
-            "but remain objective and data-driven.\n\n"
-            "Use the available tools to fetch real-time stock data and calculate metrics."
+            "- Risk flags (LLM-estimated)\n"
+            "- Save results in vector database\n\n"             
+            f"Frame your analysis from a {investor_mode.lower()} perspective,\n"
+            "but remain objective and data-driven.\n"
+            "Use the available tools to fetch real-time stock data and calculate metrics.\n"
+            "Use the available tools to save results.\n\n"
+            ""
        ),
     expected_output=(
-        "A structured research report with two sections (one per stock), "
-        "each containing the current price and key company metrics. "
-        "Include the date/time context that this is real-time data."
+        "A structured research report containing the current price and key company metrics.\n"
+        "Include the date/time context that this is real-time data.\n"
     ),
     agent=build_financial_analyst()
     )

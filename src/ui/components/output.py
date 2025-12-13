@@ -18,9 +18,10 @@ def render_output_tabs(results: dict):
         st.warning("No results to display")
         return
 
-    print("_____________________________________________" + "\n")
-    print(results)
-    print("_____________________________________________" + "\n")
+    #print("results to be rendered" + "\n")
+    #print(results)
+    #print("results to be rendered" + "\n")
+
     # Create tabs
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "📋 Executive Summary",
@@ -30,15 +31,15 @@ def render_output_tabs(results: dict):
         "📄 Full Report"
     ])
 
-    print("executive_summary" + "\n")
-    print(results.get('executive_summary'))
-    print("executive_summary" + "\n")
+    #print("executive_summary" + "\n")
+    #print(results.get('executive_summary'))
+    #print("executive_summary" + "\n")
     
     # Tab 1: Executive Summary
     with tab1:
-        print("executive_summary 2 " + "\n")
-        print(results.get('executive_summary'))
-        print("executive_summary 2" + "\n")
+        #print("executive_summary 2 " + "\n")
+        #print(results.get('executive_summary'))
+        #print("executive_summary 2" + "\n")
         render_executive_summary(results.get("executive_summary", {}))
     
     # Tab 2: Financial Indicators
@@ -63,22 +64,18 @@ def render_executive_summary(summary: dict):
     
     st.header("Executive Summary")
     
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3 = st.columns(3)  
 
-    print("summary" + "\n")
-    print(summary)
-    print("summary" + "\n")
-
-    print("summary current_price" + "\n")
+    #print("summary current_price" + "\n")
     summary_price = summary.get("current_price", "N/A")
-    print(summary_price)
-    print("summary current_price" + "\n")
+    #print(summary_price)
+    #print("summary current_price" + "\n")
     
     with col1:
         st.metric(
             "Current Price",
             summary.get("current_price", "N/A"),
-            summary.get("price_change", "N/A")
+            #summary.get("price_change", "N/A")
         )
     
     with col2:
@@ -142,7 +139,7 @@ def render_financial_indicators(indicators: dict):
     
     if indicators.get("growth_data"):
         df = pd.DataFrame(indicators["growth_data"])
-        st.dataframe(df, use_container_width=True)
+        st.dataframe(df, width=True)
     else:
         st.info("No growth data available")
     

@@ -60,9 +60,9 @@ def get_stock_info(ticker: str) -> str:
         ticker = ticker.strip().upper()
         stock = yf.Ticker(ticker)
         info = stock.info
-        print(f"---------stock info of {ticker}" + "\n")        
-        print(info)
-        print(f"---------stock info of {ticker}" + "\n")
+        #print(f"---------stock info of {ticker}" + "\n")        
+        #print(info)
+        #print(f"---------stock info of {ticker}" + "\n")
         
         # BUILD A STRUCTURED RESPONSE
         # We return key metrics that would be useful for a financial analyst
