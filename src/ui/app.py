@@ -194,7 +194,7 @@ def render_welcome_screen():
         - **Bullish Mode**: Growth-focused perspective
         - **Bearish Mode**: Risk-focused perspective
         
-        Analysis typically takes around 60 seconds depending on complexity.
+        Analysis typically takes around 1 minute depending on complexity.
         """)
         
         # Example tickers

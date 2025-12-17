@@ -150,7 +150,8 @@ def extract_financial_indicators(report_data: dict) -> dict:
     # Extract valuation ratios
     valuation_ratios = financial_indicators.get("Valuation Ratios", {})
     if isinstance(valuation_ratios, dict):
-        pe_ratio = valuation_ratios.get("P/E Ratio", "N/A") or valuation_ratios.get("PEG_Ratio", "N/A")
+        pe_ratio = valuation_ratios.get("P/E Ratio", "N/A") or \
+                   valuation_ratios.get("Price-Earnings (P/E) Ratio", "N/A")
         peg_ratio = valuation_ratios.get("PEG Ratio", "N/A")
         pb_ratio = valuation_ratios.get("P/B Ratio", "N/A")
         debt_to_equity = valuation_ratios.get("Debt/Equity Ratio", "N/A") or \
@@ -169,9 +170,11 @@ def extract_financial_indicators(report_data: dict) -> dict:
                  profitability_ratios.get("EPS_Growth_YoY") or \
                  profitability_ratios.get("EPS Growth")
 
-    roe = profitability_ratios.get("Return on Equity (ROE)")
+    roe = profitability_ratios.get("Return on Equity (ROE)") or \
+          profitability_ratios.get("ROE")
 
-    roa = profitability_ratios.get("Return on Assets (ROA)")
+    roa = profitability_ratios.get("Return on Assets (ROA)") or \
+          profitability_ratios.get("ROA")
 
     last_quarter_eps = profitability_ratios.get("Last Quarter EPS") or \
                        profitability_ratios.get("Last Quarter") or \

@@ -44,15 +44,15 @@ def build_financial_crew(inputs: dict = None) -> Crew:
     financial_analyst_task.async_execution = True
     market_researcher_task.async_execution = True
 
-    # Have reporter agentw wait for financial analyst and market researcher compplete their tasks
+    # Have reporter wait for financial analyst and market researcher complete their tasks
     reporter_task.async_execution = False
 
     crew = Crew(  
         agents=[financial_analyst, market_researcher, reporter],
         tasks=[financial_analyst_task, market_researcher_task, reporter_task],
       
-        # Set process as sequential as tasks excutions among all agents are performed
-        # in hyHybrid approach:
+        # Set process as sequential as tasks execution among all agents are performed
+        # in hybrid approach:
         # Some tasks sequential (reporter-> async_execution=False)
         # Some tasks parallel (financial analyst and researcher -> async_execution=True)
         process=Process.sequential,
