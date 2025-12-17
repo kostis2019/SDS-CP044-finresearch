@@ -1,0 +1,2 @@
+# This file ensures the outputs directory is tracked by git
+# Generated reports (*.md) are ignored via .gitignore
