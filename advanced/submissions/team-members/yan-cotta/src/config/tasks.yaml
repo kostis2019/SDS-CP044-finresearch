@@ -3,6 +3,7 @@
 
 # Task for the Researcher Agent
 research_task:
+  async_execution: true  # Run in parallel with analysis_task
   description: >
     Conduct comprehensive qualitative research on {ticker} ({company_name}).
     
@@ -17,7 +18,13 @@ research_task:
     - Verify all sources before including them
     - Clearly distinguish between facts, opinions, and speculation
     - Include publication dates for all news items
-    - Save key findings to memory for team reference
+    
+    CRITICAL - SAVE TO MEMORY:
+    After completing your research, you MUST save your key findings to team memory
+    using the memory_tool. Save each category separately:
+    - Use 'save:news:<your news findings>' for news items
+    - Use 'save:general:<key developments>' for important developments
+    This ensures the Reporter can access your findings later.
   expected_output: >
     A structured research brief containing:
     - Executive Summary (3-5 sentences)
@@ -25,10 +32,13 @@ research_task:
     - Key Developments (significant events or announcements)
     - Sentiment Analysis (market perception with supporting evidence)
     - Risk Factors (any negative news or concerns identified)
+    
+    CONFIRMATION: State that you have saved findings to memory using the memory_tool.
   agent: researcher
 
 # Task for the Analyst Agent
 analysis_task:
+  async_execution: true  # Run in parallel with research_task
   description: >
     Perform quantitative financial analysis for {ticker} ({company_name}).
     
@@ -43,7 +53,13 @@ analysis_task:
     - Report exact figures with appropriate decimal precision
     - Explicitly state when data is unavailable
     - Contextualize metrics (e.g., "P/E of 25 is above sector median of 18")
-    - Save key metrics to memory for team reference
+    
+    CRITICAL - SAVE TO MEMORY:
+    After completing your analysis, you MUST save your key metrics to team memory
+    using the memory_tool. Save metrics using:
+    - Use 'save:metrics:<your financial metrics>' for all quantitative data
+    - Use 'save:analysis:<your analytical conclusions>' for interpretations
+    This ensures the Reporter can access your findings later.
   expected_output: >
     A structured financial data package containing:
     - Price Summary (current price, change, 52-week position)
@@ -51,6 +67,8 @@ analysis_task:
     - Fundamental Data (market cap, revenue, margins)
     - Technical Context (volume, beta, volatility indicators)
     - Data Quality Notes (any metrics that could not be retrieved)
+    
+    CONFIRMATION: State that you have saved metrics to memory using the memory_tool.
   agent: analyst
 
 # Task for the Reporter Agent
@@ -58,12 +76,25 @@ report_task:
   description: >
     Create a comprehensive investment research report for {ticker} ({company_name}).
     
-    Your objectives:
-    1. Retrieve findings from team memory (research and analysis results)
-    2. Synthesize qualitative research with quantitative analysis
-    3. Structure the report in a professional, readable format
-    4. Provide a balanced assessment of opportunities and risks
-    5. Format the report in clean Markdown for easy distribution
+    STEP 1 - RETRIEVE FROM MEMORY (REQUIRED):
+    Before writing anything, you MUST retrieve the team's findings from memory:
+    - Use 'retrieve:{ticker} news developments' to get research findings
+    - Use 'retrieve:{ticker} metrics valuation' to get analysis data
+    - Use 'retrieve:{ticker} risk assessment' to get risk factors
+    
+    STEP 2 - SYNTHESIZE:
+    Based on the retrieved information:
+    1. Combine qualitative research with quantitative analysis
+    2. Structure the report in a professional, readable format
+    3. Provide a balanced assessment of opportunities and risks
+    
+    STEP 3 - FORMAT:
+    Format the final report in clean Markdown with these REQUIRED sections:
+    - Executive Summary
+    - Market Data & Financial Metrics
+    - News Analysis & Recent Developments
+    - Risk Assessment
+    - Disclaimer
     
     Requirements:
     - Use proper financial terminology
@@ -73,14 +104,26 @@ report_task:
     - Structure with clear sections and hierarchy
   expected_output: >
     A professional Markdown investment report containing:
-    - Title and metadata (company, ticker, date)
-    - Executive Summary
-    - Company Overview
-    - Recent Developments (from research)
-    - Financial Analysis (from analyst)
-    - Investment Considerations (bull/bear case)
-    - Risk Factors
-    - Disclaimer
+    
+    # Investment Research Report: {company_name} ({ticker})
+    
+    ## Executive Summary
+    [3-5 paragraph synthesis of key findings]
+    
+    ## Market Data & Financial Metrics
+    [Quantitative data from the Analyst's findings]
+    
+    ## News Analysis & Recent Developments
+    [Qualitative findings from the Researcher]
+    
+    ## Risk Assessment
+    [Key risks and concerns]
+    
+    ## Disclaimer
+    [Standard investment disclaimer]
+    
+    The report must be at least 500 words and include data from both
+    the Researcher and Analyst findings retrieved from memory.
   agent: reporter
 
 # Manager coordination task
@@ -99,6 +142,8 @@ coordination_task:
     - Verify all tasks are completed before proceeding
     - Ensure data consistency across research and analysis
     - Confirm final report incorporates all key findings
+    - Report must have: Executive Summary, Market Data, News Analysis, Risk Assessment
+    - Report must be at least 500 characters
   expected_output: >
     Confirmation that all research phases are complete and the final 
     investment report has been generated and saved.
