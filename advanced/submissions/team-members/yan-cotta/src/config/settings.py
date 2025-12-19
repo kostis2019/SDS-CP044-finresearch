@@ -11,7 +11,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Optional
 
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -22,11 +22,20 @@ class Settings(BaseSettings):
     All settings can be overridden via environment variables.
     """
     
-    # API Keys
+    # API Keys - supports both OPENAI_API_KEY and FINRESEARCH_OPENAI_API_KEY
     openai_api_key: str = Field(
         default="",
         description="OpenAI API key for LLM access"
     )
+    
+    @field_validator('openai_api_key', mode='before')
+    @classmethod
+    def get_openai_key(cls, v: str) -> str:
+        """Try to get OpenAI key from multiple env var names."""
+        if v:
+            return v
+        # Fall back to standard OPENAI_API_KEY if prefixed version not set
+        return os.getenv('OPENAI_API_KEY', '')
     
     # Model Configuration
     manager_model: str = Field(
@@ -218,10 +227,31 @@ def get_settings() -> Settings:
     """
     Get cached application settings.
     
+    Loads .env file from multiple possible locations before creating settings.
+    
     Returns:
         Settings instance (cached for performance)
     """
+    from dotenv import load_dotenv
+    
+    # Try loading .env from various locations
+    possible_env_paths = [
+        Path.cwd() / ".env",  # Current working directory
+        Path(__file__).parent.parent.parent / ".env",  # Project root (yan-cotta/)
+        Path(__file__).parent.parent.parent.parent.parent.parent.parent / ".env",  # Workspace root
+    ]
+    
+    for env_path in possible_env_paths:
+        if env_path.exists():
+            load_dotenv(env_path)
+            break
+    
     return Settings()
+
+
+def clear_settings_cache() -> None:
+    """Clear the settings cache to reload configuration."""
+    get_settings.cache_clear()
 
 
 # Paths relative to this module
