@@ -35,7 +35,7 @@ def main():
     
     # Header
     st.title("📊 FinResearch AI")
-    st.markdown("*Automated Financial Market Intelligence with Multi-Agent Systems*")
+    st.markdown("*Automated Financial Market Intelligence with Multi-Agent Systems*")    
     st.divider()
     
     # Sidebar - Input Form
@@ -48,7 +48,14 @@ def main():
         # Run Analysis Button
         if st.button("🚀 Run Analysis", type="primary", use_container_width=True):
             run_analysis(user_inputs)
-
+        
+        st.divider()
+        st.info(
+        "⚠️ **Disclaimer:** This tool is for informational purposes only and does not constitute financial advice. "
+        "The information provided should not be relied upon as a substitute for professional financial advice. "
+        "Always consult with a qualified financial advisor before making investment decisions."
+    )
+    
     #print("st.session_state.analysis_complete" + "\n")
     #print(st.session_state.analysis_complete)
     #print("st.session_state.analysis_completen" + "\n")

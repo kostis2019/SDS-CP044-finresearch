@@ -101,6 +101,11 @@ def extract_executive_summary(report_data: dict) -> dict:
     if len(week_52_range) == 2:
         #range_str = f"${week_52_range[0]:.2f} - ${week_52_range[1]:.2f}"
         range_str = f"${week_52_range[0]} - ${week_52_range[1]}"
+    elif len(week_52_range) == 0:
+        week_52_high = price_movements.get("52-Week High", "")
+        week_52_low = price_movements.get("52-Week Low", "")
+        range_str = f"${week_52_low} - ${week_52_high}"
+
     else:
         range_str = "N/A"
     
@@ -154,8 +159,9 @@ def extract_financial_indicators(report_data: dict) -> dict:
                    valuation_ratios.get("Price-Earnings (P/E) Ratio", "N/A")
         peg_ratio = valuation_ratios.get("PEG Ratio", "N/A")
         pb_ratio = valuation_ratios.get("P/B Ratio", "N/A")
-        debt_to_equity = valuation_ratios.get("Debt/Equity Ratio", "N/A") or \
-                         valuation_ratios.get("Debt_to_Equity_Ratio", "N/A")
+        #debt_to_equity = valuation_ratios.get("Debt/Equity Ratio", "N/A") or \
+        #                valuation_ratios.get("Debt-to-Equity", "N/A")
+        debt_to_equity = valuation_ratios.get("Debt-to-Equity", "N/A")
     
     # Extract profitability ratios
     profitability_ratios = financial_indicators.get("Profitability Ratios", {}) or \
@@ -175,6 +181,9 @@ def extract_financial_indicators(report_data: dict) -> dict:
 
     roa = profitability_ratios.get("Return on Assets (ROA)") or \
           profitability_ratios.get("ROA")
+
+    profit_margin = profitability_ratios.get("Profit Margin")
+    operating_margin = profitability_ratios.get("Operating Margin")
 
     last_quarter_eps = profitability_ratios.get("Last Quarter EPS") or \
                        profitability_ratios.get("Last Quarter") or \
@@ -214,8 +223,8 @@ def extract_financial_indicators(report_data: dict) -> dict:
         "eps_growth": str(eps_growth),
         "roe": str(roe),
         "roa": str(roa),
-        "profit_margin": "N/A",
-        "operating_margin": "N/A",
+        "profit_margin": str(profit_margin),
+        "operating_margin": str(operating_margin),
         
         # Price metrics
         "52_week_high": high_52w,
@@ -244,6 +253,7 @@ def extract_news_sentiment(report_data: dict) -> dict:
         dict: News items and sentiment analysis
     """
     news_sentiment_data = report_data.get("News & Sentiment", {})
+    recent_news = []
     if isinstance(news_sentiment_data, dict):
         news_sentiment_data = report_data.get("News & Sentiment", {})    
          # Extract recent news

@@ -5,6 +5,26 @@ Output display components organized in tabs.
 import streamlit as st
 import pandas as pd
 
+def apply_custom_css():
+    """Apply custom CSS to reduce metric font sizes across all tabs."""
+    st.markdown("""
+        <style>
+        /* Reduce metric value font size */
+        [data-testid="stMetricValue"] {
+            font-size: 20px !important;
+        }
+        
+        /* Reduce metric label font size */
+        [data-testid="stMetricLabel"] {
+            font-size: 13px !important;
+        }
+        
+        /* Reduce metric delta font size */
+        [data-testid="stMetricDelta"] {
+            font-size: 11px !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
 
 def render_output_tabs(results: dict):
     """
@@ -101,12 +121,14 @@ def render_executive_summary(summary: dict):
 
 def render_financial_indicators(indicators: dict):
     """Render the financial indicators tab."""
+     # Apply custom CSS styling - call once here to affect all tabs
+    apply_custom_css()
     
     st.header("Financial Indicators")
 
-    print("indicators " * 3 + "\n")
-    print(indicators)
-    print("indicators " * 3 + "\n")
+    #print("indicators " * 3 + "\n")
+    #print(indicators)
+    #print("indicators " * 3 + "\n")
     
     # Valuation Metrics
     st.subheader("📈 Valuation Metrics")

@@ -3,6 +3,17 @@ from config.settings import get_config
 import yfinance as yf
 from tavily import TavilyClient
 
+def roundNumericalString(value: str, ndigits: int) -> str:
+    result = 'N/A'
+    if value is None:
+        return result        
+    
+    if isinstance(value, (int, float)):
+        result = round(value, ndigits)
+    
+    return result
+    
+
 @tool("Get Stock Price")
 def get_stock_price(ticker: str) -> str:
     """
@@ -62,20 +73,62 @@ def get_stock_info(ticker: str) -> str:
         ticker = ticker.strip().upper()
         stock = yf.Ticker(ticker)
         info = stock.info
-        #print(f"---------stock info of {ticker}" + "\n")        
-        #print(info)
-        #print(f"---------stock info of {ticker}" + "\n")
+        print(f"stock info of {ticker}"  + "\n")        
+        print(info)        
+        print(f"stock info of {ticker}" + "\n")
+
+        print(f"ROE: ${info.get('returnOnEquity', 0):.2f}" + "\n")
+        print(f"ROA: ${info.get('returnOnAssets', 0):.2f}" + "\n")
+
+        # Extract and round P/E ratio to 2 decimal places
+        trailing_pe = info.get('trailingPE')
+        if trailing_pe is not None and isinstance(trailing_pe, (int, float)):
+            trailing_pe = round(trailing_pe, 2)
+        else:
+            trailing_pe = 'N/A'
+        print(f"trailing_pe: ${trailing_pe}")        
         
         # BUILD A STRUCTURED RESPONSE
         # We return key metrics that would be useful for a financial analyst
-        return (
-            f"Company: {info.get('shortName', 'N/A')}\n"
-            f"Sector: {info.get('sector', 'N/A')}\n"
-            f"Industry: {info.get('industry', 'N/A')}\n"
-            f"Market Cap: ${info.get('marketCap', 0):,.0f}\n"
-            f"52-Week High: ${info.get('fiftyTwoWeekHigh', 0):.2f}\n"
-            f"52-Week Low: ${info.get('fiftyTwoWeekLow', 0):.2f}"
-        )
+        # Ensure critical metrics are included
+        stock_info = {
+            'ticker': ticker,
+            'company_name': info.get('longName', 'N/A'),
+
+            'sector': info.get('sector', 'N/A'),
+            'industry': info.get('industry', 'N/A'),
+            'market_cap': info.get('marketCap', 0),            
+            '52-week_range': info.get('fiftyTwoWeekRange', 0),
+                    
+            # Valuation metrics
+            'pe_ratio': f"{info.get('trailingPE', 'N/A'):.2f}",
+            #'pe_ratio': roundNumericalString(info.get('trailingPE')),
+            #'peg_ratio': roundNumericalString(info.get('trailingPegRatio', 2)),
+            'peg_ratio': f"{info.get('trailingPegRatio', 'N/A'):.2f}",
+            'debt_to_equity': f"{info.get('debtToEquity', 'N/A'):.2f}",
+            
+            # Profitability metrics - CRITICAL
+            'roe': f"{info.get('returnOnEquity', 'N/A'):.2f}",
+            'roa': f"{info.get('returnOnAssets', 'N/A'):.2f}",
+            
+            # If ROE/ROA missing, provide raw data for calculation
+            'net_income': info.get('netIncomeToCommon', 'N/A'),
+            'total_assets': info.get('totalAssets', 'N/A'),
+            'shareholder_equity': info.get('totalStockholderEquity', 'N/A'),
+            
+            # Other metrics
+            'profit_margin': info.get('profitMargins', 'N/A'),
+            'operating_margin': info.get('operatingMargins', 'N/A'),
+            'revenue_growth': info.get('revenueGrowth', 'N/A'),
+            
+            # Full info for agent to explore
+            'full_info': info
+        }
+        print("stock_info" * 3 + "\n")
+        print(stock_info)
+        print("stock_info" * 3 + "\n")
+
+        return stock_info       
     except Exception as e:
         return f"Error fetching info for '{ticker}': {str(e)}"
 

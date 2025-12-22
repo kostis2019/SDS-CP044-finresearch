@@ -91,9 +91,16 @@ def build_reporter_task(inputs: dict = None, context: list = None) -> Task:
             "A structured report in JSON format including following sections:\n"
             "Executive Summary\n"
             "Financial Indicators\n"
+            "Under the Financial Indicators section, for some sub-sections like Valuation Retios\n"
+            "and Profitability Ratios, use the following key values\n"
+            "'P/E Ratio': value or 'N/A'\n"
+            "'PEG Ratio': value or 'N/A'\n"
+            "'Debt-to-Equity': value or 'N/A'\n"
+            "'ROE': value or 'N/A'\n"
+            "'ROA': value or 'N/A'\n"
             "News & Sentiment\n"
             "Risks & Opportunities\n"
-            "Full Report (Markdown)\n"
+            "Full Report (Markdown)\n\n"
         ),        
         agent=build_reporter(),
 
