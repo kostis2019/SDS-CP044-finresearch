@@ -47,7 +47,6 @@ FinResearch AI will:
 ---
 
 # 📂 Repository Structure
-
 ```
 FinResearch-AI/
 ├── CONTRIBUTING.md
@@ -94,7 +93,7 @@ FinResearch-AI/
 │       └── utils/
 │           ├── formatters.py
 │           └── state_manager.py
-```
+```  
 
 # Usage on local
 streamlit run .\src\ui\app.py
