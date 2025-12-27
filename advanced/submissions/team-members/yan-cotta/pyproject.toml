@@ -6,10 +6,12 @@ authors = ["Yan Cotta <yan.cotta@example.com>"]
 readme = "README.md"
 license = "MIT"
 packages = [{ include = "src" }]
-keywords = ["finance", "ai", "agents", "crewai", "research"]
+keywords = ["finance", "ai", "agents", "crewai", "research", "fastapi"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Console",
+    "Environment :: Web Environment",
+    "Framework :: FastAPI",
     "Intended Audience :: Financial and Insurance Industry",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
@@ -45,6 +47,11 @@ pydantic = "^2.10.3"
 pydantic-settings = "^2.6.1"
 python-dotenv = "^1.0.1"
 pyyaml = "^6.0.2"
+
+# Web Server (FastAPI)
+fastapi = "^0.115.0"
+uvicorn = { version = "^0.32.0", extras = ["standard"] }
+python-multipart = "^0.0.18"
 
 [tool.poetry.group.dev.dependencies]
 # Testing
