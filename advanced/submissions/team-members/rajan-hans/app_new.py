@@ -448,7 +448,7 @@ if "research_result" not in st.session_state:
 # Sidebar Inputs
 # --------------------------------
 st.sidebar.title("FinResearch AI")
-st.sidebar.caption("CrewAI - Multi-Agent Equity Research")
+st.sidebar.caption("CrewAI - Multi-Agent Equity Research \n By Rajan Hans")
 
 ticker = st.sidebar.text_input(
     "Stock Ticker",
@@ -521,7 +521,8 @@ st.markdown(
     """
     AI-driven multi-agent equity research using **CrewAI** with automatic sector detection.
     The system coordinates parallel execution of Analyst and Researcher agents,
-    then synthesizes their outputs into a professional investment report.
+    then synthesizes their outputs into a professional investment report.\n
+    By Rajan Hans
     """
 )
 
