@@ -1,30 +1,49 @@
 # =============================================================================
-# FinResearch AI - Production Dockerfile
-# Multi-Agent Financial Research System
+# FinResearch AI - Production Dockerfile (Full-Stack Monolith)
+# Multi-Agent Financial Research System with React UI
 # =============================================================================
 #
 # Build:
 #   docker build -t finresearch-ai:latest .
 #
-# Run:
-#   docker run --rm -it \
+# Run (Web Server):
+#   docker run --rm -p 8000:8000 \
 #     -e OPENAI_API_KEY=sk-your-key \
-#     -v $(pwd)/reports:/app/reports \
-#     finresearch-ai:latest AAPL --name "Apple Inc"
+#     -v $(pwd)/outputs:/app/outputs \
+#     finresearch-ai:latest
 #
-# Development:
+# Run (CLI Mode):
 #   docker run --rm -it \
 #     -e OPENAI_API_KEY=sk-your-key \
-#     -v $(pwd):/app \
-#     finresearch-ai:latest --help
+#     finresearch-ai:latest cli AAPL --sequential
 #
 # =============================================================================
 
 # -----------------------------------------------------------------------------
-# Stage 1: Builder
-# Install dependencies in a separate stage for smaller final image
+# Stage 1: Frontend Builder (Node.js)
+# Build the React application with Vite
 # -----------------------------------------------------------------------------
-FROM python:3.11-slim AS builder
+FROM node:20-slim AS frontend-builder
+
+WORKDIR /app/frontend
+
+# Copy frontend dependency files
+COPY frontend/package.json frontend/package-lock.json* ./
+
+# Install dependencies
+RUN npm ci --silent
+
+# Copy frontend source
+COPY frontend/ ./
+
+# Build the production bundle
+RUN npm run build
+
+# -----------------------------------------------------------------------------
+# Stage 2: Python Dependencies Builder
+# Install Python dependencies in a separate stage
+# -----------------------------------------------------------------------------
+FROM python:3.11-slim AS python-builder
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -54,13 +73,12 @@ WORKDIR /app
 COPY pyproject.toml ./
 
 # Generate requirements and install dependencies
-# Using pip for final install to avoid poetry overhead in production
 RUN poetry export -f requirements.txt --without-hashes --only main > requirements.txt \
     && pip install --target=/app/deps -r requirements.txt
 
 # -----------------------------------------------------------------------------
-# Stage 2: Production Runtime
-# Minimal image with only runtime dependencies
+# Stage 3: Production Runtime
+# Minimal image with Python backend serving React frontend
 # -----------------------------------------------------------------------------
 FROM python:3.11-slim AS runtime
 
@@ -82,7 +100,10 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     # ChromaDB settings
     CHROMA_PERSIST_DIR=/app/.chroma_db \
     # Default output directory
-    OUTPUT_DIR=/app/reports
+    OUTPUT_DIR=/app/outputs \
+    # Server settings
+    PORT=8000 \
+    HOST=0.0.0.0
 
 # Create non-root user for security
 RUN groupadd --gid 1000 finresearch \
@@ -91,12 +112,15 @@ RUN groupadd --gid 1000 finresearch \
 # Set working directory
 WORKDIR ${APP_HOME}
 
-# Copy dependencies from builder stage
-COPY --from=builder /app/deps /app/deps
+# Copy Python dependencies from builder stage
+COPY --from=python-builder /app/deps /app/deps
 
 # Copy application code
 COPY --chown=finresearch:finresearch src/ ./src/
 COPY --chown=finresearch:finresearch main.py ./
+
+# Copy built frontend from frontend-builder stage
+COPY --from=frontend-builder --chown=finresearch:finresearch /app/frontend/dist ./frontend/dist
 
 # Create directories for persistence with correct permissions
 RUN mkdir -p ${OUTPUT_DIR} ${CHROMA_PERSIST_DIR} \
@@ -105,15 +129,40 @@ RUN mkdir -p ${OUTPUT_DIR} ${CHROMA_PERSIST_DIR} \
 # Switch to non-root user
 USER finresearch
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import src; print('healthy')" || exit 1
+# Health check - check the API endpoint
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')" || exit 1
 
 # Volume mounts for persistent data
-VOLUME ["/app/reports", "/app/.chroma_db"]
+VOLUME ["/app/outputs", "/app/.chroma_db"]
 
-# Entry point - run the CLI
-ENTRYPOINT ["python", "main.py"]
+# Expose the web server port
+EXPOSE 8000
 
-# Default command (show help if no args provided)
-CMD ["--help"]
+# Entry point script to support both web and CLI modes
+COPY --chown=finresearch:finresearch <<'EOF' /app/entrypoint.sh
+#!/bin/bash
+set -e
+
+if [ "$1" = "cli" ]; then
+    # CLI mode - pass remaining args to main.py
+    shift
+    exec python main.py "$@"
+elif [ "$1" = "web" ] || [ -z "$1" ]; then
+    # Web server mode (default)
+    exec python -m uvicorn src.api:app --host ${HOST} --port ${PORT}
+else
+    # Unknown command - assume it's for the CLI
+    exec python main.py "$@"
+fi
+EOF
+
+# Make entrypoint executable
+USER root
+RUN chmod +x /app/entrypoint.sh
+USER finresearch
+
+ENTRYPOINT ["/bin/bash", "/app/entrypoint.sh"]
+
+# Default command - start web server
+CMD ["web"]
