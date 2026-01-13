@@ -1,0 +1,9 @@
+crewai==1.6.1
+pandas>=2.3.3
+yfinance>=0.2.66
+pytest>=7.0.0
+langchain-openai>=0.1.0
+python-dotenv>=1.1.1
+pandas
+streamlit>=1.30.0
+plotly
