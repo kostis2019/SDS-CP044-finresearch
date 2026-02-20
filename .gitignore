@@ -3,6 +3,7 @@
 .DS_Store
 .env
 .github
+internal_memory_db
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -128,3 +129,8 @@ venv.bak/
 *.tar
 *.gz
 *.zip
+# Node.js
+node_modules/
+
+# ChromaDB
+.chroma_db/

@@ -57,17 +57,16 @@ class FinancialDataTool(BaseTool):
             logger.error("yfinance library not installed")
             return "ERROR: yfinance library is not installed. Run: pip install yfinance"
         
-        ticker = self._normalize_ticker(ticker)
-        
         try:
+            ticker = self._normalize_ticker(ticker)
             data = self._fetch_data(ticker)
             return self._format_output(ticker, data)
         except ToolError as e:
-            logger.warning(f"Tool error for {ticker}: {e.message}")
+            logger.warning(f"Tool error: {e.message}")
             return f"ERROR: {e.message}"
         except Exception as e:
-            logger.exception(f"Unexpected error fetching data for {ticker}")
-            return f"ERROR: Unexpected error fetching data for '{ticker}': {type(e).__name__}"
+            logger.exception(f"Unexpected error fetching data for ticker")
+            return f"ERROR: Unexpected error fetching data: {type(e).__name__}"
     
     def _normalize_ticker(self, ticker: str) -> str:
         """Normalize ticker symbol input."""

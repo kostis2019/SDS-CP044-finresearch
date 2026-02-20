@@ -1,0 +1,14 @@
+streamlit
+python-dotenv
+pydantic
+pandas
+requests
+yfinance
+langchain
+langchain-core
+langchain-community
+langchain-openai
+langchain-chroma
+langgraph
+chromadb
+beautifulsoup4

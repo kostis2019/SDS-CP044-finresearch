@@ -1,0 +1,19 @@
+# Core Agent Framework
+crewai>=1.6.1
+openai
+langchain_openai
+langchain-community
+
+# Data Processing
+pandas>=2.0.0
+
+# Tools & APIs
+yfinance              # For stock data
+tavily-python         # For web search
+python-dotenv         # For managing API keys
+
+# Vestor database
+chromadb
+
+# Web Framework
+streamlit>=1.28.0
